@@ -1,0 +1,12 @@
+[package]
+name = "mkml"
+version = "0.1.0"
+edition = "2021"
+description = "Generates a simple HTML project structure"
+authors = ["Rohan"]
+
+[dependencies]
+clap = {version = "3.2.17", features = ["derive"]}
+log = "0.4.17"
+owo-colors = "3.5.0"
+pretty_env_logger = "0.4.0"
