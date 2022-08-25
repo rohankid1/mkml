@@ -91,7 +91,7 @@ fn init(project: &InitProject) -> std::io::Result<()> {
                 create_directory(&format!("{name}{MAIN_SEPARATOR}js"))?;
                 create_file(
                     &format!("{name}{MAIN_SEPARATOR}js{MAIN_SEPARATOR}index.js"),
-                    CSS_CONTENTS,
+                    JS_CONTENTS,
                 )?;
                 create_file(&format!("{name}{MAIN_SEPARATOR}index.html"), HTML_CONTENTS)?;
             }
@@ -105,7 +105,7 @@ fn init(project: &InitProject) -> std::io::Result<()> {
                 )?;
                 create_file(
                     &format!("{name}{MAIN_SEPARATOR}js{MAIN_SEPARATOR}index.js"),
-                    CSS_CONTENTS,
+                   JS_CONTENTS,
                 )?;
                 create_file(&format!("{name}{MAIN_SEPARATOR}index.html"), HTML_CONTENTS)?;
             }
