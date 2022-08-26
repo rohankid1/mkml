@@ -17,13 +17,3 @@ pub fn create_file(name: &str, contents: &str) -> io::Result<()> {
     write!(file, "{contents}")?;
     file.flush()
 }
-
-#[inline]
-pub fn create_directory(name: &str) -> io::Result<()> {
-    // if fs::metadata(name)?.is_dir() { // then the directory must already exists 
-    //     log::warn!("Directory already exists: `{name}`");
-    //     return Ok(());
-    // }
-
-    fs::create_dir(name)
-}

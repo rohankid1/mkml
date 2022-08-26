@@ -1,31 +1,29 @@
-#![allow(warnings)] // for now
-
-use args::Level;
 use clap::Parser;
+use std::env;
 
 mod action;
 mod args;
 
+use args::Action;
+
 fn main() {
     pretty_env_logger::init();
 
-    log::info!("Started");
-
     let args = args::App::parse();
 
-    match &args.log {
-        Some(log) => match log {
-            Level::Debug => {}
-            Level::Error => {}
-            Level::Info => {}
-            Level::Warning => {}
-        },
-        None => {}
+    // TODO: get it to actually log
+    // when on a certain level.
+    match args.log {
+        1 => env::set_var("RUST_LOG", "debug"),
+        2 => env::set_var("RUST_LOG", "info"),
+        3 => env::set_var("RUST_LOG", "warning"),
+        4 => env::set_var("RUST_LOG", "error"),
+        0 | _ => {}
     }
+
+    log::info!("Started");
 
     match &args.action {
-        args::Action::Init(dir) => action::initialize_project(&args),
+        Action::Init(_) => action::initialize_project(&args),
     }
-
-    log::info!("End");
 }
