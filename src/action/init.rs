@@ -28,7 +28,6 @@ const CSS_CONTENTS: &str = r##"* {
 const JS_CONTENTS: &str = r##"console.log('Hello, World!');
 "##;
 
-#[inline]
 pub fn initialize_project(args: &App) {
     match &args.action {
         Action::Init(str) => match init(str) {

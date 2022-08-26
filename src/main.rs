@@ -1,5 +1,4 @@
 use clap::Parser;
-use std::env;
 
 mod action;
 mod args;
