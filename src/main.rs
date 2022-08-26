@@ -13,13 +13,13 @@ fn main() {
 
     // TODO: get it to actually log
     // when on a certain level.
-    match args.log {
-        1 => env::set_var("RUST_LOG", "debug"),
-        2 => env::set_var("RUST_LOG", "info"),
-        3 => env::set_var("RUST_LOG", "warning"),
-        4 => env::set_var("RUST_LOG", "error"),
-        0 | _ => {}
-    }
+    // match args.log {
+    //     1 => env::set_var("RUST_LOG", "debug"),
+    //     2 => env::set_var("RUST_LOG", "info"),
+    //     3 => env::set_var("RUST_LOG", "warning"),
+    //     4 => env::set_var("RUST_LOG", "error"),
+    //     0 | _ => {}
+    // }
 
     log::info!("Started");
 
