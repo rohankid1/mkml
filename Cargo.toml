@@ -7,6 +7,7 @@ authors = ["Rohan"]
 keywords = ["CLI", "HTML", "CSS", "JS"]
 repository = "https://github.com/rohankid1/mkml/"
 homepage = "https://github.com/rohankid1/mkml"
+license = "MIT"
 
 [dependencies]
 clap = {version = "3.2.17", features = ["derive"]}
