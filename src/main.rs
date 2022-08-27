@@ -6,8 +6,10 @@ mod args;
 use args::Action;
 
 fn main() {
+    // initialize the logger
     pretty_env_logger::init();
 
+    // parse the command line flags and others
     let args = args::App::parse();
 
     // TODO: get it to actually log
@@ -22,6 +24,9 @@ fn main() {
 
     log::info!("Started");
 
+    // currently, there is only one action.
+    // There will be more actions in future
+    // releases
     match &args.action {
         Action::Init(_) => action::initialize_project(&args),
     }
