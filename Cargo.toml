@@ -1,11 +1,12 @@
 [package]
 name = "mkml"
-version = "0.1.2"
+version = "0.1.4"
 edition = "2021"
-description = "Generates a simple HTML project structure"
+description = "A CLI app to quickly initialize basic HTML projects"
 authors = ["Rohan"]
+keywords = ["CLI", "HTML", "CSS", "JS"]
 repository = "https://github.com/rohankid1/mkml/"
-homepage = "https://github.com/rohankid1/mkml/"
+homepage = "https://github.com/rohankid1/mkml"
 
 [dependencies]
 clap = {version = "3.2.17", features = ["derive"]}
