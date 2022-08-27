@@ -30,4 +30,5 @@ fn main() {
     match &args.action {
         Action::Init(_) => action::initialize_project(&args),
     }
+    
 }
