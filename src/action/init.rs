@@ -2,8 +2,8 @@ use crate::args::{Action, App, Exclude, InitProject};
 use owo_colors::OwoColorize;
 
 use super::create_file;
-use crate::{dir_create, files_create};
-use std::{fs::create_dir, path::MAIN_SEPARATOR};
+use crate::{create_dirs, create_files};
+use std::{fs::create_dir, path::MAIN_SEPARATOR as SEP, f32::consts::E};
 
 const HTML_CONTENTS: &str = r##"<!DOCTYPE html>
 <html lang="en">
@@ -31,7 +31,7 @@ const JS_CONTENTS: &str = "console.log('Hello, World!');";
 
 pub fn initialize_project(args: &App) {
     match &args.action {
-        Action::Init(str) => match init(str) {
+        Action::Init(project) => match init(project) {
             Ok(()) => {}
             Err(err) => {
                 log::error!("{err}");
@@ -39,6 +39,7 @@ pub fn initialize_project(args: &App) {
                 println!("{}: {err}", "Error".red())
             }
         },
+        Action::Clone(clone) => {}
         // more actions soon...
     }
 }
@@ -50,6 +51,12 @@ fn init(project: &InitProject) -> std::io::Result<()> {
         None => Exclude::default(), // Exclude::None,
     };
 
+    if name.is_empty() {
+        create_file(".mkml", "")?;
+    } else {
+        create_file(&format!("{name}{SEP}.mkml"), "")?;
+    }
+
     if project.minimal {
         if name.is_empty() {
             match create_file("index.html", HTML_CONTENTS) {
@@ -58,7 +65,7 @@ fn init(project: &InitProject) -> std::io::Result<()> {
             }
         } else {
             create_dir(&name)?;
-            match create_file(&format!("{name}/index.html"), HTML_CONTENTS) {
+            match create_file(&format!("{name}{SEP}index.html"), HTML_CONTENTS) {
                 Ok(_) => {
                     println!("{}: created minimal project", "Success".green());
                     return Ok(());
@@ -74,8 +81,8 @@ fn init(project: &InitProject) -> std::io::Result<()> {
                 log::info!("Excluding JS directory. Creating in current directory");
                 create_dir("css")?;
 
-                files_create!(
-                    &format!("css{MAIN_SEPARATOR}style.css") => CSS_CONTENTS,
+                create_files!(
+                    &format!("css{SEP}style.css") => CSS_CONTENTS,
                     "index.html" => HTML_CONTENTS
                 );
             }
@@ -83,21 +90,21 @@ fn init(project: &InitProject) -> std::io::Result<()> {
                 log::info!("Excluding CSS directory. Creating in current directory");
                 create_dir("js")?;
 
-                files_create!(
-                    &format!("js{MAIN_SEPARATOR}index.js") => JS_CONTENTS,
+                create_files!(
+                    &format!("js{SEP}index.js") => JS_CONTENTS,
                     "index.html" => HTML_CONTENTS
                 );
             }
             Exclude::None => {
                 log::info!("Full. Creating in current directory");
 
-                files_create!(
-                    &format!("css{MAIN_SEPARATOR}style.css") => CSS_CONTENTS,
-                    &format!("js{MAIN_SEPARATOR}index.js") => JS_CONTENTS,
+                create_files!(
+                    &format!("css{SEP}style.css") => CSS_CONTENTS,
+                    &format!("js{SEP}index.js") => JS_CONTENTS,
                     "index.html" => HTML_CONTENTS
                 );
 
-                dir_create!("js", "css");
+                create_dirs!("js", "css");
             }
         }
     } else {
@@ -105,34 +112,34 @@ fn init(project: &InitProject) -> std::io::Result<()> {
         match exclude {
             Exclude::JS | Exclude::Javascript => {
                 log::info!("Excluding JS directory. Creating in directory {name}");
-                create_dir(&format!("{name}{MAIN_SEPARATOR}css"))?;
+                create_dir(&format!("{name}{SEP}css"))?;
 
-                files_create!(
-                    &format!("{name}{MAIN_SEPARATOR}css{MAIN_SEPARATOR}style.css") => CSS_CONTENTS,
-                    &format!("{name}{MAIN_SEPARATOR}index.html") => HTML_CONTENTS
+                create_files!(
+                    &format!("{name}{SEP}css{SEP}style.css") => CSS_CONTENTS,
+                    &format!("{name}{SEP}index.html") => HTML_CONTENTS
                 );
             }
             Exclude::CSS => {
                 log::info!("Excluding CSS directory. Creating in directory {name}");
-                create_dir(&format!("{name}{MAIN_SEPARATOR}js"))?;
+                create_dir(&format!("{name}{SEP}js"))?;
 
-                files_create!(
-                    &format!("{name}{MAIN_SEPARATOR}js{MAIN_SEPARATOR}index.js") => JS_CONTENTS,
-                    &format!("{name}{MAIN_SEPARATOR}index.html") => HTML_CONTENTS
+                create_files!(
+                    &format!("{name}{SEP}js{SEP}index.js") => JS_CONTENTS,
+                    &format!("{name}{SEP}index.html") => HTML_CONTENTS
                 );
             }
             Exclude::None => {
                 log::info!("Full. Creating in directory {name}");
 
-                dir_create!(
-                    format!("{name}{MAIN_SEPARATOR}js"),
-                    format!("{name}{MAIN_SEPARATOR}css")
+                create_dirs!(
+                    format!("{name}{SEP}js"),
+                    format!("{name}{SEP}css")
                 );
 
-                files_create!(
-                    &format!("{name}{MAIN_SEPARATOR}css{MAIN_SEPARATOR}style.css") => CSS_CONTENTS,
-                    &format!("{name}{MAIN_SEPARATOR}js{MAIN_SEPARATOR}index.js") => JS_CONTENTS,
-                    &format!("{name}{MAIN_SEPARATOR}index.html") => HTML_CONTENTS
+                create_files!(
+                    &format!("{name}{SEP}css{SEP}style.css") => CSS_CONTENTS,
+                    &format!("{name}{SEP}js{SEP}index.js") => JS_CONTENTS,
+                    &format!("{name}{SEP}index.html") => HTML_CONTENTS
                 );
             }
         }
