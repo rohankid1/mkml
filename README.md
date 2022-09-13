@@ -1,7 +1,6 @@
 # mkml
 
-mkdl is a simple, cross-platform(?), command written in Rust to initialize a simple
-HTML website project with organisation.
+mkdl is a simple, cross-platform(?), command written in Rust to initialize a simple HTML website project with organisation.
 
 This project is in very early stages of developments and some stuff
 are not complete; for example, selecting a log level flag will not do anything yet.
@@ -18,6 +17,7 @@ OPTIONS:
     -V, --version    Print version information
 
 SUBCOMMANDS:
+    clone    Clone an existing project
     help    Print this message or the help of the given subcommand(s)
     init    Create a HTML project
 ```
@@ -29,13 +29,15 @@ latest release so it's better to build from source.
 
 If you're a Rust developer, you can simply run the command to install it:
 ```
-cargo install mkml --release
+cargo install mkml
 ```
 
 # Building from source
 ## Prerequisites 
 * Rustc
 * Cargo
+
+* Minimum Rust version is 1.63
 
 Rustc and Cargo can be installed from [here](https://www.rust-lang.org/tools/install)
 
