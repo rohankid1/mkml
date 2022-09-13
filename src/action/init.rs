@@ -1,9 +1,10 @@
+use super::{
+    super::{create_dirs, files},
+    create_file, fail, success,
+};
 use crate::args::{Action, App, Exclude, InitProject};
-use owo_colors::OwoColorize;
-
-use super::create_file;
-use crate::{create_dirs, create_files};
-use std::{fs::create_dir, path::MAIN_SEPARATOR as SEP, f32::consts::E};
+use std::io::Write;
+use std::{fs::create_dir, path::MAIN_SEPARATOR as SEP};
 
 const HTML_CONTENTS: &str = r##"<!DOCTYPE html>
 <html lang="en">
@@ -29,6 +30,16 @@ const CSS_CONTENTS: &str = r##"* {
 
 const JS_CONTENTS: &str = "console.log('Hello, World!');";
 
+fn generate_default_json_config_file(name: &str) -> String {
+    format!(
+        r#"{{
+    "name": "{name}",
+    "description": "",
+    "authors": [""]
+}}"#
+    )
+}
+
 pub fn initialize_project(args: &App) {
     match &args.action {
         Action::Init(project) => match init(project) {
@@ -36,38 +47,49 @@ pub fn initialize_project(args: &App) {
             Err(err) => {
                 log::error!("{err}");
                 log::debug!("Error debug: {err:?}");
-                println!("{}: {err}", "Error".red())
+                fail(&format!("{err}"));
             }
         },
-        Action::Clone(clone) => {}
-        // more actions soon...
+        _ => unreachable!(),
     }
 }
 
 fn init(project: &InitProject) -> std::io::Result<()> {
-    let name = project.name.clone().unwrap_or_default();
+    let mut name = project.name.clone().unwrap_or_default();
+    name = name.split_whitespace().collect::<String>().to_owned();
+    let is_empty = name.is_empty();
     let exclude = match project.exclude.clone() {
         Some(exclude) => exclude,
         None => Exclude::default(), // Exclude::None,
     };
 
-    if name.is_empty() {
-        create_file(".mkml", "")?;
+    if name.ends_with(SEP) {
+        name = name.strip_suffix(SEP).unwrap().to_owned();
+    }
+
+    if is_empty {
+        create_file("mkml.json", &generate_default_json_config_file(&name))?;
+        name = ".".to_owned();
     } else {
-        create_file(&format!("{name}{SEP}.mkml"), "")?;
+        create_dirs!("{name}");
+
+        let json = generate_default_json_config_file(&name);
+
+        files!(
+            {"{name}{SEP}mkml.json" => "{json}"}
+        );
     }
 
     if project.minimal {
-        if name.is_empty() {
+        if is_empty {
             match create_file("index.html", HTML_CONTENTS) {
                 Ok(_) => return Ok(()),
                 Err(err) => return Err(err),
             }
         } else {
-            create_dir(&name)?;
             match create_file(&format!("{name}{SEP}index.html"), HTML_CONTENTS) {
                 Ok(_) => {
-                    println!("{}: created minimal project", "Success".green());
+                    success("created minimal project");
                     return Ok(());
                 }
                 Err(err) => return Err(err),
@@ -75,80 +97,45 @@ fn init(project: &InitProject) -> std::io::Result<()> {
         }
     }
 
-    if name.is_empty() {
-        match exclude {
-            Exclude::JS | Exclude::Javascript => {
-                log::info!("Excluding JS directory. Creating in current directory");
-                create_dir("css")?;
+    match exclude {
+        Exclude::JS | Exclude::Javascript => {
+            log::info!("Excluding JS directory. Creating in directory {name}");
 
-                create_files!(
-                    &format!("css{SEP}style.css") => CSS_CONTENTS,
-                    "index.html" => HTML_CONTENTS
-                );
-            }
-            Exclude::CSS => {
-                log::info!("Excluding CSS directory. Creating in current directory");
-                create_dir("js")?;
+            create_dirs!("{name}{SEP}css");
 
-                create_files!(
-                    &format!("js{SEP}index.js") => JS_CONTENTS,
-                    "index.html" => HTML_CONTENTS
-                );
-            }
-            Exclude::None => {
-                log::info!("Full. Creating in current directory");
-
-                create_files!(
-                    &format!("css{SEP}style.css") => CSS_CONTENTS,
-                    &format!("js{SEP}index.js") => JS_CONTENTS,
-                    "index.html" => HTML_CONTENTS
-                );
-
-                create_dirs!("js", "css");
-            }
+            files!(
+                {"{name}{SEP}css{SEP}style.css" => "{CSS_CONTENTS}"},
+                {"{name}{SEP}index.html" => "{HTML_CONTENTS}"}
+            );
         }
-    } else {
-        create_dir(&name)?;
-        match exclude {
-            Exclude::JS | Exclude::Javascript => {
-                log::info!("Excluding JS directory. Creating in directory {name}");
-                create_dir(&format!("{name}{SEP}css"))?;
+        Exclude::CSS => {
+            log::info!("Excluding CSS directory. Creating in directory {name}");
 
-                create_files!(
-                    &format!("{name}{SEP}css{SEP}style.css") => CSS_CONTENTS,
-                    &format!("{name}{SEP}index.html") => HTML_CONTENTS
-                );
-            }
-            Exclude::CSS => {
-                log::info!("Excluding CSS directory. Creating in directory {name}");
-                create_dir(&format!("{name}{SEP}js"))?;
+            create_dirs!("{name}{SEP}js");
 
-                create_files!(
-                    &format!("{name}{SEP}js{SEP}index.js") => JS_CONTENTS,
-                    &format!("{name}{SEP}index.html") => HTML_CONTENTS
-                );
-            }
-            Exclude::None => {
-                log::info!("Full. Creating in directory {name}");
+            files!(
+                {"{name}{SEP}js{SEP}index.js" => "{JS_CONTENTS}"},
+                {"{name}{SEP}index.html" => "{HTML_CONTENTS}"}
+            );
+        }
+        Exclude::None => {
+            log::info!("No exclusion. Creating in directory {name}");
 
-                create_dirs!(
-                    format!("{name}{SEP}js"),
-                    format!("{name}{SEP}css")
-                );
+            create_dirs!("{name}{SEP}css", "{name}{SEP}js");
 
-                create_files!(
-                    &format!("{name}{SEP}css{SEP}style.css") => CSS_CONTENTS,
-                    &format!("{name}{SEP}js{SEP}index.js") => JS_CONTENTS,
-                    &format!("{name}{SEP}index.html") => HTML_CONTENTS
-                );
-            }
+            files!(
+                {"{name}{SEP}css{SEP}style.css" => "{CSS_CONTENTS}"},
+                {"{name}{SEP}js{SEP}index.js" => "{JS_CONTENTS}"},
+                {"{name}{SEP}index.html" => "{HTML_CONTENTS}"}
+            );
+            // }
         }
     }
 
-    if !name.is_empty() {
-        println!("{}: created `{name}`", "Success".green());
+    if is_empty {
+        success("created project");
     } else {
-        println!("{}: created project", "Success".green());
+        success(&format!("created `{name}`"));
     }
 
     Ok(())
