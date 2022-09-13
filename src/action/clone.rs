@@ -165,17 +165,6 @@ fn clone(project: &CloneProject) -> std::io::Result<Context> {
 
     log::info!("ctx.path: {}", ctx.path);
     if path.is_dir() {
-        // match fs_extra::copy_items(&[ctx.path.clone()], format!(".{SEP}"), &options) {
-        //     Ok(_) => {}
-        //     Err(err) => return Err(Error::new(ErrorKind::Other, err)),
-        // }
-
-        // let mut things = Path::new(&ctx.path)
-        //     .read_dir()?
-        //     .flat_map(|entry| entry.ok())
-        //     .flat_map(|entry| Some(entry.path()))
-        //     .collect::<Vec<_>>();
-
         match fs_extra::copy_items(
             &get_dir_contents(&ctx.path)?,
             std::env::current_dir()?.join(&project.rename),

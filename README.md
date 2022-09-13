@@ -59,7 +59,11 @@ finish compiling.
 
 Once it has finished compiling, the executable should have been created in
 target/release/. The binary's name is `mkml` on Linux and `mkml.exe` on Windows.
-For Linux users, you have to run it through the terminal. Also, for quick access,
+
+For Linux users, you have to run it through the terminal.
+
+Also, for quick access,
 you should copy or move the binary to `/usr/local/bin` - that way you can just run `mkml`
-and not something like `Downloads/mkml/target/release/mkml`. You can simply do this by running
+and not something like: `Downloads/mkml/target/release/mkml`.
+You can simply do this by running
 `sudo cp path/to/mkml /usr/local/bin` or mv instead of cp if you want to move it.
