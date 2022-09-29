@@ -7,13 +7,10 @@ use serde_json::error::Result;
 
 use std::io::{Error, ErrorKind};
 use std::path::PathBuf;
-use std::{
-    fs,
-    path::{Path, MAIN_SEPARATOR as SEP},
-};
+use std::{fs, path::Path};
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
-struct Context {
+pub(crate) struct Context {
     name: String,
     description: Option<String>,
     authors: Option<Vec<String>>,
@@ -205,4 +202,35 @@ fn get_dir_contents<T: AsRef<Path>>(path: T) -> std::io::Result<Vec<PathBuf>> {
         .flat_map(|entry| entry.ok())
         .flat_map(|entry| Some(entry.path()))
         .collect())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn read_config_file() {
+        let ctx = Context {
+            path: "resources/tests/".to_owned(),
+            ..Default::default()
+        };
+
+        let deserialized = ctx.deserialize_from_path().unwrap();
+
+        assert_eq!(deserialized.name, "TestProject".to_owned());
+        assert_eq!(deserialized.description, None);
+        assert_eq!(
+            deserialized.authors,
+            Some(vec!["Rohan".to_owned(), "Another_Name".to_owned()])
+        );
+    }
+
+    #[test]
+    fn lists_resources_dir() {
+        let contents = get_dir_contents("resources").unwrap();
+        let inner = get_dir_contents("resources/tests").unwrap();
+
+        assert_eq!(contents, vec![PathBuf::from("resources/tests")]);
+        assert_eq!(inner, vec![PathBuf::from("resources/tests/mkml.json")]);
+    }
 }
