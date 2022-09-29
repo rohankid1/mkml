@@ -1,4 +1,4 @@
-use clap::{clap_derive::ArgEnum, Args, Parser, Subcommand};
+use clap::{clap_derive::ValueEnum, Args, Parser, Subcommand};
 
 #[derive(Parser, Debug, Clone)]
 #[clap(author, version, about)]
@@ -32,9 +32,8 @@ pub enum Action {
 pub struct InitProject {
     /// The name of the project
     pub name: Option<String>,
-
     /// Don't include a certain language to be added
-    #[clap(short, long, arg_enum)]
+    #[clap(short, long, value_enum)]
     pub exclude: Option<Exclude>,
 
     /// Creates a basic HTML template file in a directory, if the --name or -n flag is provided
@@ -59,7 +58,7 @@ pub struct CloneProject {
     pub skip_exist: bool,
 }
 
-#[derive(Debug, Clone, ArgEnum, Default)]
+#[derive(Debug, Clone, ValueEnum, Default)]
 pub enum Exclude {
     JS,
     Javascript,
