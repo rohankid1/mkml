@@ -1,6 +1,11 @@
 # mkml
 
-mkdl is a simple, cross-platform, command written in Rust to initialize a simple HTML website project with organisation.
+[![Tests](https://github.com/rohankid1/mkml/actions/workflows/tests.yml/badge.svg)](https://github.com/rohankid1/mkml/actions/workflows/tests.yml)
+![Crates.io](https://img.shields.io/crates/v/mkml)
+![Crates.io](https://img.shields.io/crates/d/mkml)
+
+
+mkml is a simple but cross-platform command written in Rust to initialize a simple HTML website project with organisation in mind.
 
 This project is in very early stages of developments and some stuff
 are not complete; for example, selecting a log level flag will not do anything yet.
