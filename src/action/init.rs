@@ -3,8 +3,9 @@ use super::{
     create_file, fail, success,
 };
 use crate::args::{Action, App, Exclude, InitProject};
+use std::fs::create_dir;
 use std::io::Write;
-use std::{fs::create_dir, path::MAIN_SEPARATOR as SEP};
+use std::path::MAIN_SEPARATOR as SEP;
 
 const HTML_CONTENTS: &str = r##"<!DOCTYPE html>
 <html lang="en">
@@ -13,6 +14,7 @@ const HTML_CONTENTS: &str = r##"<!DOCTYPE html>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/style.css">
+    <script src="js/index.js" />
     <title>Document</title>
 </head>
 <body>
@@ -76,7 +78,7 @@ fn init(project: &InitProject) -> std::io::Result<()> {
         let json = generate_default_json_config_file(&name);
 
         files!(
-            {"{name}{SEP}mkml.json" => "{json}"}
+            {"{name}/mkml.json" => "{json}"}
         );
     }
 
@@ -87,7 +89,7 @@ fn init(project: &InitProject) -> std::io::Result<()> {
                 Err(err) => return Err(err),
             }
         } else {
-            match create_file(&format!("{name}{SEP}index.html"), HTML_CONTENTS) {
+            match create_file(&format!("{name}/index.html"), HTML_CONTENTS) {
                 Ok(_) => {
                     success("created minimal project");
                     return Ok(());
@@ -101,32 +103,32 @@ fn init(project: &InitProject) -> std::io::Result<()> {
         Exclude::JS | Exclude::Javascript => {
             log::info!("Excluding JS directory. Creating in directory {name}");
 
-            create_dirs!("{name}{SEP}css");
+            create_dirs!("{name}/css");
 
             files!(
-                {"{name}{SEP}css{SEP}style.css" => "{CSS_CONTENTS}"},
-                {"{name}{SEP}index.html" => "{HTML_CONTENTS}"}
+                {"{name}/css/style.css" => "{CSS_CONTENTS}"},
+                {"{name}/index.html" => "{HTML_CONTENTS}"}
             );
         }
         Exclude::CSS => {
             log::info!("Excluding CSS directory. Creating in directory {name}");
 
-            create_dirs!("{name}{SEP}js");
+            create_dirs!("{name}/js");
 
             files!(
-                {"{name}{SEP}js{SEP}index.js" => "{JS_CONTENTS}"},
-                {"{name}{SEP}index.html" => "{HTML_CONTENTS}"}
+                {"{name}/js/index.js" => "{JS_CONTENTS}"},
+                {"{name}/index.html" => "{HTML_CONTENTS}"}
             );
         }
         Exclude::None => {
             log::info!("No exclusion. Creating in directory {name}");
 
-            create_dirs!("{name}{SEP}css", "{name}{SEP}js");
+            create_dirs!("{name}/css", "{name}/js");
 
             files!(
-                {"{name}{SEP}css{SEP}style.css" => "{CSS_CONTENTS}"},
-                {"{name}{SEP}js{SEP}index.js" => "{JS_CONTENTS}"},
-                {"{name}{SEP}index.html" => "{HTML_CONTENTS}"}
+                {"{name}/css/style.css" => "{CSS_CONTENTS}"},
+                {"{name}/js/index.js" => "{JS_CONTENTS}"},
+                {"{name}/index.html" => "{HTML_CONTENTS}"}
             );
             // }
         }
