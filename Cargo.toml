@@ -1,6 +1,6 @@
 [package]
 name = "mkml"
-version = "0.1.7"
+version = "0.2.0"
 edition = "2021"
 description = "A CLI app to quickly initialize basic HTML projects"
 authors = ["Rohan"]
@@ -18,6 +18,8 @@ serde = {version = "1.0.144", features = ["derive"]}
 serde_json = "1.0.85"
 profile_time = "0.1.1"
 fs_extra = "1.2.0"
+self_update = "0.32.0"
+regex = "1.6.0"
 
 [profile.dev]
 opt-level = 0
