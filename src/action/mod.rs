@@ -1,11 +1,14 @@
 mod clone;
 mod init;
+mod update_mkml;
 
 pub use clone::clone_project;
 pub use init::initialize_project;
+pub use update_mkml::update;
 
 use io::Write;
 use owo_colors::OwoColorize;
+use std::fmt::{Debug, Display};
 use std::{fs, io};
 
 /// A macro that takes in a variadic amount of arguments
@@ -97,3 +100,19 @@ pub fn success(msg: &str) {
 pub fn fail(msg: &str) {
     eprintln!("{}: {msg}", "Error".red());
 }
+
+struct Error<T: Display + Debug>(T);
+
+impl<T: Display + Debug> Display for Error<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
+
+impl<T: Display + Debug> std::fmt::Debug for Error<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self.0)
+    }
+}
+
+impl<T: Display + Debug> std::error::Error for Error<T> {}
