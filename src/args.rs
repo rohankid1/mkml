@@ -1,7 +1,7 @@
 use clap::{clap_derive::ValueEnum, Args, Parser, Subcommand};
 
 #[derive(Parser, Debug, Clone)]
-#[clap(author, version, about)]
+#[clap(version)]
 pub struct App {
     /// Set the logging level:
     /// 0: No logging,
@@ -26,6 +26,8 @@ pub enum Action {
     Init(InitProject),
     /// Clone an existing project
     Clone(CloneProject),
+    /// Fetch and install the latest version if possible
+    Update(UpdateFlags),
 }
 
 #[derive(Debug, Args, Clone)]
@@ -56,6 +58,20 @@ pub struct CloneProject {
     /// Skip files that already exist
     #[clap(short, long)]
     pub skip_exist: bool,
+}
+
+#[derive(Debug, Args, Clone)]
+pub struct UpdateFlags {
+    /// Allows installation for a different version, instead of the latest.
+    /// For example, 0.1.0
+    #[clap(short, long)]
+    pub version: Option<String>,
+    /// Displays the download/progress bar
+    #[clap(short, long)]
+    pub download_bar: bool,
+    /// Displays all available builds
+    #[clap(short, long)]
+    pub list: bool,
 }
 
 #[derive(Debug, Clone, ValueEnum, Default)]
