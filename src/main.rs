@@ -56,5 +56,6 @@ fn main() {
     match &args.action {
         Action::Init(_) => action::initialize_project(&args),
         Action::Clone(_) => action::clone_project(&args),
+        Action::Update(flags) => action::update(flags),
     }
 }
