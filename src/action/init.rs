@@ -47,8 +47,7 @@ pub fn initialize_project(args: &App) {
         Action::Init(project) => match init(project) {
             Ok(()) => {}
             Err(err) => {
-                log::error!("{err}");
-                log::debug!("Error debug: {err:?}");
+                log::error!("{err:?}");
                 fail(&format!("{err}"));
             }
         },
