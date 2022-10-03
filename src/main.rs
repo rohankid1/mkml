@@ -50,9 +50,6 @@ fn main() {
 
     log::info!("Started");
 
-    // currently, there is only one action.
-    // There will be more actions in future
-    // releases
     match &args.action {
         Action::Init(_) => action::initialize_project(&args),
         Action::Clone(_) => action::clone_project(&args),
