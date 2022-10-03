@@ -17,7 +17,7 @@ pub fn update(args: &crate::args::UpdateFlags) {
 }
 
 fn update_cli(args: &crate::args::UpdateFlags) -> Result<(), Box<dyn std::error::Error>> {
-    if let Some(version) = args.version.clone() {
+    if let Some(version) = &args.version {
         return install_custom_version(args, version);
     }
 
@@ -30,7 +30,7 @@ fn update_cli(args: &crate::args::UpdateFlags) -> Result<(), Box<dyn std::error:
         .repo_name("mkml")
         .bin_name("mkml")
         .current_version(CURRENT_VERSION)
-        .show_download_progress(args.download_bar)
+        .show_download_progress(!args.omit_download_bar)
         .build()?
         .update()?;
 
@@ -43,7 +43,7 @@ fn update_cli(args: &crate::args::UpdateFlags) -> Result<(), Box<dyn std::error:
 
 fn install_custom_version(
     args: &crate::args::UpdateFlags,
-    version: String,
+    version: &str,
 ) -> Result<(), Box<dyn std::error::Error>> {
     if !right_version_format(&version) {
         return Err(Box::new(Error(
@@ -57,7 +57,7 @@ fn install_custom_version(
         .bin_name("mkml")
         .current_version(CURRENT_VERSION)
         .target_version_tag(&version)
-        .show_download_progress(args.download_bar)
+        .show_download_progress(!args.omit_download_bar)
         .build()?
         .update()?;
 
