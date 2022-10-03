@@ -66,9 +66,9 @@ pub struct UpdateFlags {
     /// For example, 0.1.0
     #[clap(short, long)]
     pub version: Option<String>,
-    /// Displays the download/progress bar
+    /// Don't display the download/progress bar
     #[clap(short, long)]
-    pub download_bar: bool,
+    pub omit_download_bar: bool,
     /// Displays all available builds
     #[clap(short, long)]
     pub list: bool,
