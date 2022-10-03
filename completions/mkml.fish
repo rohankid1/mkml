@@ -15,4 +15,4 @@ complete -c mkml -n "__fish_seen_subcommand_from init" -s m -l minimal -d "Creat
 
 complete -c mkml -n "__fish_seen_subcommand_from update" -s l -l list -d "Display all available mkml builds"
 complete -c mkml -n "__fish_seen_subcommand_from update" -s v -l version -d "Choose a custom version of mkml to install instead of the latest"
-complete -c mkml -n "__fish_seen_subcommand_from update" -s d -l download-bar -d "Displays the download/progress bar"
+complete -c mkml -n "__fish_seen_subcommand_from update" -s o -l omit-download-bar -d "Displays the download/progress bar"
