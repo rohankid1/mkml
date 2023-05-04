@@ -1,4 +1,5 @@
 use super::Error;
+use lazy_static::lazy_static;
 use owo_colors::{AnsiColors, OwoColorize};
 use regex::Regex;
 use self_update::backends::github::{ReleaseList, Update};
@@ -89,8 +90,11 @@ fn list_builds() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 fn right_version_format(str: &str) -> bool {
-    let re = Regex::new(r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$").unwrap();
-    re.is_match(str)
+    lazy_static! {
+        static ref RE: Regex = Regex::new(r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$").unwrap();
+    }
+
+    RE.is_match(str)
 }
 
 #[cfg(test)]
