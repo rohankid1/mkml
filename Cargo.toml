@@ -20,6 +20,7 @@ profile_time = "0.1.1"
 fs_extra = "1.2.0"
 self_update = "0.36.0"
 regex = "1.6.0"
+lazy_static = "1.4.0"
 
 [profile.dev]
 opt-level = 0
